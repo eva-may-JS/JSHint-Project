@@ -27,6 +27,7 @@ async function getStatus(e) {
     /* If there is an error/s. data.error will give us the error message from "data" 
     (the data we are getting from the API) */
     else {
+        displayException(data);
         throw new Error(data.error);
     }
 }
@@ -97,6 +98,7 @@ async function postForm(e) {
     }
     //If errors
     else {
+        displayException(data);
         throw new Error(data.error);
     }
 }
@@ -126,4 +128,17 @@ function displayErrors (data) {
 
     resultsModal.show();
 
+}
+
+function displayException(data) {
+
+    let heading = `<div class="error-heading">An Exception Occurred</div>`;
+    results = `<div>The API returned status code ${data.status_code}</div>`;
+    results += `<div>Error number: <strong>${data.error_no}</strong></div>`;
+    results += `<div>Error text: <strong>${data.error}</strong></div>`;
+
+    document.getElementById("resultsModalTitle").innerHTML = heading;
+    document.getElementById("results-content").innerHTML = results;
+
+    resultsModal.show();
 }
