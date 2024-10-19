@@ -48,15 +48,36 @@ function displayStatus (data) {
 errors found in their JS code */
 document.getElementById("submit"). addEventListener("click", e => postForm(e));
 
+/* A function to change how the "options" parameter is sent to the API, as it won't recognise the way it is 
+sent currently (as a separate array ["options", "value"] for every option), as we are told in its 
+instructions */ 
+function processOptions(form) {
+    let optArray = [];
+
+    for(let entry of form.entries()) {
+        if (entry[0] === "options") {
+            optArray.push(entry[1]);
+        }
+    }
+    form.delete("options");
+    /* Adding the array we have just created to be the new value of "options". .join() converts 
+    the array into a string, ensuring the different options are separated by commas as required by the 
+    API instructions */
+    form.append("options", optArray.join());
+
+    return form;
+}
+
 async function postForm(e) {
     /* FormData is a JS interface which captures all the fields in an HTML form and returns them as an object
     which we can then give to "fetch()" */
-    const form = new FormData(document.getElementById("checksform"));
+    const form = processOptions(new FormData(document.getElementById("checksform")));
 
     // This for loop was a test to see if FormData was working (returning the form fields as an object)
-    /*for (let el of from.entries()) {
-        console.log(el); 
-    } */
+    // And also that the parameters were being submitted in the correct format for our API
+    for (let entry of form.entries()) {
+        console.log(entry); 
+    } 
 
     /*This is our POST request, of the API URL, demonstrating authorisation with our API KEY. 
     "body" is the main information we are sending and want a response to*/
